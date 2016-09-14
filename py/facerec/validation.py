@@ -131,9 +131,9 @@ class ValidationStrategy(object):
         
     
     def print_results(self):
-        print self.model
+        print(self.model)
         for validation_result in self.validation_results:
-            print validation_result
+            print(validation_result)
 
     def __repr__(self):
         return "Validation Kernel (model=%s)" % (self.model)

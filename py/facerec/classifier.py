@@ -4,6 +4,9 @@
 # Copyright (c) Philipp Wagner. All rights reserved.
 # Licensed under the BSD license. See LICENSE file in the project root for full license information.
 
+import sys
+IsPython3=sys.version_info >= (3,0)
+
 from facerec.distance import EuclideanDistance
 from facerec.util import asRowMatrix
 import logging
@@ -90,7 +93,10 @@ class NearestNeighbor(AbstractClassifier):
         # Make a histogram of them:
         hist = dict((key,val) for key, val in enumerate(np.bincount(sorted_y)) if val)
         # And get the bin with the maximum frequency:
-        predicted_label = max(hist.iteritems(), key=op.itemgetter(1))[0]
+        if IsPython3:
+            predicted_label = max(hist.items(), key=op.itemgetter(1))[0]
+        else:
+            predicted_label = max(hist.iteritems(), key=op.itemgetter(1))[0]
         # A classifier should output a list with the label as first item and
         # generic data behind. The k-nearest neighbor classifier outputs the 
         # distance of the k first items. So imagine you have a 1-NN and you
@@ -111,8 +117,10 @@ except:
     logger = logging.getLogger("facerec.classifier.SVM")
     logger.debug("Import Error: libsvm bindings not available.")
 
-import sys
-from StringIO import StringIO
+if IsPython3:
+    from io import StringIO
+else:
+    from StringIO import StringIO
 bkp_stdout=sys.stdout
 
 class SVM(AbstractClassifier):
